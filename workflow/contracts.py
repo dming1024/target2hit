@@ -5,7 +5,7 @@ PipelineContext.previous dict, keyed by module name.
 """
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Literal, Optional, Tuple
 import numpy as np
 
 
@@ -30,7 +30,7 @@ class PipelineContext:
 
 @dataclass(frozen=True)
 class ScreeningConfig:
-    mode: str = "zero_shot"
+    mode: Literal["zero_shot", "mlp"] = "zero_shot"
     protein_model: str = "esm2_t30_150M_UR50D"
     ligand_model: str = "ChemBERTa-77M-MLM"
     mlp_weights: Optional[Path] = None
@@ -63,7 +63,7 @@ class ScreeningResult:
 class StructureResult:
     pdb_path: Path
     protein_sequence: str
-    source: str  # "pdb" or "alphafold"
+    source: Literal["pdb", "alphafold"]
     resolution: Optional[float] = None
     uniprot_id: str = ""
 
