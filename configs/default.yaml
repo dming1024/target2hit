@@ -1,0 +1,49 @@
+# configs/default.yaml
+pipeline:
+  top_n_screening: 500
+  top_n_docking: 100
+  top_n_final: 50
+
+screening:
+  mode: "zero_shot"           # zero_shot | mlp
+  protein_model: "esm2_t30_150M_UR50D"
+  ligand_model: "ChemBERTa-77M-MLM"
+  mlp_weights: null
+  projection_dim: 256
+  batch_size: 256
+  device: "auto"              # auto | cpu | cuda
+
+docking:
+  exhaustiveness: 8
+  num_cpus: 4
+  box_padding: 4.0            # angstroms around pocket center
+
+ranking:
+  weights:
+    ai_score: 0.30
+    dock_score: 0.30
+    drug_likeness: 0.15
+    novelty: 0.10
+    sa_penalty: 0.10
+    pains_penalty: 0.05
+
+structure:
+  prefer_experimental: true   # prefer PDB over AlphaFold
+  max_resolution: 3.0         # angstroms
+
+pocket:
+  algorithm: "fpocket"        # fpocket only in V1
+  top_pockets: 3
+
+compound_library:
+  sources: ["chembl", "drugbank", "pdbbind"]
+  max_compounds: 100000
+
+database:
+  url: "postgresql://target2drug:target2drug@localhost:5432/target2drug"
+
+storage:
+  endpoint: "localhost:9000"
+  access_key: "minioadmin"
+  secret_key: "minioadmin"
+  bucket: "target2drug"
