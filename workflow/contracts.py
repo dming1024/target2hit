@@ -65,7 +65,7 @@ class StructureResult:
     protein_sequence: str
     source: Literal["pdb", "alphafold"]
     resolution: Optional[float] = None
-    uniprot_id: str = ""
+    uniprot_id: Optional[str] = None
 
 
 # ---------------------------------------------------------------------------

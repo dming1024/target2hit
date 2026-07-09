@@ -38,10 +38,11 @@ class TestPipelineContext:
             disease=None,
             config={},
         )
+        from dataclasses import FrozenInstanceError
         try:
             ctx.job_id = "hacked"
             assert False, "Should have raised FrozenInstanceError"
-        except Exception:
+        except FrozenInstanceError:
             pass
 
 
