@@ -27,16 +27,27 @@ class LigandEncoder:
 
     def _load_model(self):
         if self._model is None:
+            from pathlib import Path
             from transformers import AutoModel, AutoTokenizer
-            try:
-                model_id = f"DeepChem/{self.model_name}"
+
+            # Prefer local model if available
+            local_path = Path("models") / self.model_name
+            if local_path.is_dir():
+                model_id = str(local_path)
+                logger.info(f"Loading {self.model_name} from local: {model_id}")
                 self._tokenizer = AutoTokenizer.from_pretrained(model_id)
                 self._model = AutoModel.from_pretrained(model_id).to(self.device)
-            except Exception:
-                logger.warning(f"Failed to load {self.model_name}, falling back")
-                model_id = "seyonec/PubChem10M_SMILES_BPE_450k"
-                self._tokenizer = AutoTokenizer.from_pretrained(model_id)
-                self._model = AutoModel.from_pretrained(model_id).to(self.device)
+            else:
+                try:
+                    model_id = f"DeepChem/{self.model_name}"
+                    self._tokenizer = AutoTokenizer.from_pretrained(model_id)
+                    self._model = AutoModel.from_pretrained(model_id).to(self.device)
+                except Exception:
+                    logger.warning(f"Failed to load {self.model_name}, falling back")
+                    model_id = "seyonec/PubChem10M_SMILES_BPE_450k"
+                    self._tokenizer = AutoTokenizer.from_pretrained(model_id)
+                    self._model = AutoModel.from_pretrained(model_id).to(self.device)
+
             self._model.eval()
             logger.info(f"Loaded ligand encoder on {self.device}")
 

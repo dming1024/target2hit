@@ -7,6 +7,9 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+# ML model weights (downloaded separately)
+models/*/
+!models/.gitkeep
 # Large data files - regenerate with target_assessment/data/build_offline_db.py
 target_assessment/data/processed/*.db
 target_assessment/data/processed/*.csv

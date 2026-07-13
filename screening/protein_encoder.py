@@ -33,9 +33,19 @@ class ProteinEncoder:
 
     def _load_model(self):
         if self._model is None:
+            from pathlib import Path
             from transformers import EsmModel, EsmTokenizer
-            self._tokenizer = EsmTokenizer.from_pretrained(f"facebook/{self.model_name}")
-            self._model = EsmModel.from_pretrained(f"facebook/{self.model_name}").to(self.device)
+
+            # Prefer local model if available
+            local_path = Path("models") / self.model_name
+            if local_path.is_dir():
+                model_id = str(local_path)
+                logger.info(f"Loading {self.model_name} from local: {model_id}")
+            else:
+                model_id = f"facebook/{self.model_name}"
+
+            self._tokenizer = EsmTokenizer.from_pretrained(model_id)
+            self._model = EsmModel.from_pretrained(model_id).to(self.device)
             self._model.eval()
             logger.info(f"Loaded {self.model_name} on {self.device}")
 
