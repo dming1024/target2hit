@@ -8,8 +8,29 @@ from screening.zero_shot import run_zero_shot_screening
 logger = logging.getLogger(__name__)
 
 
+def _check_dependencies():
+    """Check that GPU/ML dependencies are available."""
+    missing = []
+    try:
+        import torch
+    except ImportError:
+        missing.append("torch (PyTorch)")
+    try:
+        import transformers
+    except ImportError:
+        missing.append("transformers (HuggingFace)")
+    if missing:
+        raise RuntimeError(
+            f"Screening module requires: {', '.join(missing)}.\n"
+            "Install with: pip install torch transformers --extra-index-url https://download.pytorch.org/whl/cu121\n"
+            "This server does not have GPU support. Deploy to a GPU-enabled production environment."
+        )
+
+
 def run(ctx: PipelineContext) -> PipelineContext:
     """Run AI virtual screening on the target."""
+    _check_dependencies()
+
     screening_cfg = ctx.config.get("screening", {})
     lib_cfg = ctx.config.get("compound_library", {})
 

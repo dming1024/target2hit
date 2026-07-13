@@ -15,7 +15,7 @@ ALPHAFOLD_API = "https://alphafold.ebi.ac.uk/api/prediction"
 def resolve_uniprot(gene_symbol: str) -> str:
     """Resolve gene symbol to UniProt accession (human)."""
     params = {
-        "query": f"gene:{gene_symbol} AND organism_id:9606",
+        "query": f"gene:{gene_symbol} AND organism_id:9606 AND reviewed:true",
         "format": "json",
         "size": 1,
     }
@@ -63,6 +63,8 @@ def search_pdb(uniprot_id: str, max_resolution: float = 3.0) -> Optional[dict]:
     }
     response = httpx.post(PDB_SEARCH_API, json=query, timeout=30)
     response.raise_for_status()
+    if response.status_code == 204 or not response.text.strip():
+        return None
     data = response.json()
     results = data.get("result_set", [])
     if not results:

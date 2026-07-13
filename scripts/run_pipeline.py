@@ -22,7 +22,7 @@ def main():
 
     job_id = str(uuid.uuid4())[:8]
     config = load_config(args.config)
-    config["report"]["output_dir"] = args.output
+    config.setdefault("report", {})["output_dir"] = args.output
 
     ctx = PipelineContext(
         job_id=job_id,

@@ -87,9 +87,12 @@ Target2Drug/
 
 ## 环境要求
 
+> **注意**: 本开发服务器不包含 GPU，无法运行 AI Screening (需要 PyTorch + Transformers)。模块在检测到缺少依赖时会给出明确错误提示。部署到生产环境 (带 GPU) 后安装 `torch` 和 `transformers` 即可。
+
 | 依赖 | 版本 | 说明 |
 |------|------|------|
 | Python | 3.8+ (推荐 3.10) | .python-version 指定 3.8 |
+| **GPU (生产环境)** | NVIDIA + CUDA 12.1+ | AI Screening 模块需要 GPU 推理 |
 | PostgreSQL | 15 | 任务和结果持久化 |
 | Redis | 7 | 任务队列缓存 |
 | MinIO | latest | 对象存储 (报告/结构文件) |
@@ -100,7 +103,7 @@ Target2Drug/
 
 核心包见 `requirements.txt`，主要包括：
 - **Web**: FastAPI 0.115, Uvicorn 0.30, Pydantic 2.9
-- **ML**: PyTorch >= 2.0, Transformers >= 4.40 (ESM2, ChemBERTa)
+- **ML (生产环境)**: PyTorch >= 2.0, Transformers >= 4.40 (ESM2, ChemBERTa)
 - **Cheminformatics**: RDKit >= 2023.03, Meeko >= 0.5, OpenBabel
 - **Bioinformatics**: Biopython >= 1.83
 - **Data**: NumPy, Pandas, PyYAML

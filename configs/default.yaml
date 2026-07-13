@@ -42,6 +42,10 @@ compound_library:
 database:
   url: "postgresql://target2drug:target2drug@localhost:5432/target2drug"
 
+report:
+  output_dir: "/tmp/target2drug"
+  format: "html"
+
 storage:
   endpoint: "localhost:9000"
   access_key: "minioadmin"
