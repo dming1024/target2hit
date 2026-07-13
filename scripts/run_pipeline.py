@@ -2,17 +2,19 @@
 """CLI entry point for running the Target2Hit pipeline."""
 import argparse
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 def main():
+    default_output = str(Path(tempfile.gettempdir()) / "target2drug")
     parser = argparse.ArgumentParser(description="Target2Hit Discovery Pipeline")
     parser.add_argument("--gene", "-g", required=True, help="Gene symbol (e.g., EGFR)")
     parser.add_argument("--disease", "-d", default=None, help="Disease context (e.g., NSCLC)")
     parser.add_argument("--config", "-c", default=None, help="YAML config override")
-    parser.add_argument("--output", "-o", default="/tmp/target2drug", help="Output directory")
+    parser.add_argument("--output", "-o", default=default_output, help="Output directory")
     args = parser.parse_args()
 
     import uuid

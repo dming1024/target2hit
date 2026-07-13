@@ -1,11 +1,13 @@
 """Resolve gene symbol → UniProt ID → PDB/AlphaFold structure."""
 from __future__ import annotations
 import logging
+import tempfile
 from pathlib import Path
 from typing import Optional, Tuple
 import httpx
 
 logger = logging.getLogger(__name__)
+TMPDIR = Path(tempfile.gettempdir())
 UNIPROT_API = "https://rest.uniprot.org/uniprotkb"
 PDB_SEARCH_API = "https://search.rcsb.org/rcsbsearch/v2/query"
 PDB_DOWNLOAD_URL = "https://files.rcsb.org/download"
@@ -88,7 +90,7 @@ def download_from_alphafold(uniprot_id: str) -> Path:
 
     pdb_response = httpx.get(pdb_url, timeout=60)
     pdb_response.raise_for_status()
-    output = Path(f"/tmp/{uniprot_id}_alphafold.pdb")
+    output = Path(TMPDIR, f"{uniprot_id}_alphafold.pdb")
     output.write_text(pdb_response.text)
     return output
 
@@ -100,7 +102,7 @@ def download_structure(structure_info: Optional[dict], uniprot_id: str) -> Tuple
         url = f"{PDB_DOWNLOAD_URL}/{pdb_id}.pdb"
         response = httpx.get(url, timeout=60)
         response.raise_for_status()
-        output = Path(f"/tmp/{pdb_id}.pdb")
+        output = Path(TMPDIR, f"{pdb_id}.pdb")
         output.write_text(response.text)
         return output, "pdb"
 

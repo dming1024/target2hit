@@ -43,7 +43,7 @@ database:
   url: "postgresql://target2drug:target2drug@localhost:5432/target2drug"
 
 report:
-  output_dir: "/tmp/target2drug"
+  # output_dir defaults to system temp dir (cross-platform)
   format: "html"
 
 storage:
