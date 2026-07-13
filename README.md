@@ -143,6 +143,53 @@ wget https://github.com/ccsb-scripps/AutoDock-Vina/releases/download/v1.2.5/vina
 chmod +x /usr/local/bin/vina
 ```
 
+**Windows 部署：**
+
+```powershell
+# 1. 创建虚拟环境
+python -m venv .venv
+.venv\Scripts\activate
+
+# 2. 安装依赖 (跳过 openbabel-wheel，使用纯 Python 替代)
+pip install -r requirements.txt
+
+# 3. 安装 PyTorch (根据 CUDA 版本选择)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+# 或 CPU 版: pip install torch torchvision torchaudio
+
+# 4. AutoDock Vina
+#    下载 vina_1.2.7_win.exe → 重命名为 vina.exe → 放到 PATH 或项目目录
+
+# 5. OpenBabel (可选 — 受体 PDB→PDBQT 已有纯 Python 回退)
+#    conda install -c conda-forge openbabel
+```
+
+> **OpenBabel 说明**: `openbabel-wheel` (pip) 在 Windows 上需要 CMake 编译器，容易安装失败。
+> 代码已内置纯 Python PDB→PDBQT 转换器作为回退，不安装 OpenBabel 也可正常运行。
+> 如需更高精度，通过 conda 安装: `conda install -c conda-forge openbabel`
+
+**Linux 部署：**
+
+```bash
+# 创建虚拟环境
+python3.8 -m venv .venv
+source .venv/bin/activate
+
+# 安装 Python 依赖
+pip install -r requirements.txt
+
+# fPocket
+sudo apt-get install fpocket
+
+# AutoDock Vina
+wget https://github.com/ccsb-scripps/AutoDock-Vina/releases/download/v1.2.5/vina_1.2.5_linux_x86_64 \
+    -O /usr/local/bin/vina
+chmod +x /usr/local/bin/vina
+
+# OpenBabel (可选，已经内置纯 Python 回退)
+sudo apt-get install openbabel
+```
+
 **Docker 部署 (推荐，一步到位)：**
 
 ```bash
