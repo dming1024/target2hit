@@ -9,8 +9,8 @@ transformers>=4.40.0
 
 # Cheminformatics
 rdkit>=2023.03
-meeko>=0.5.0
-# openbabel-wheel>=3.1.1   # OPTIONAL: remove for Windows; pure-Python fallback handles PDB→PDBQT
+meeko>=0.5.0,<0.7       # 0.7+ requires Python>=3.9; pin <0.7 for 3.8 compat
+# openbabel-wheel>=3.1.1 # OPTIONAL: remove for Windows; pure-Python fallback handles PDB→PDBQT
 
 # Bioinformatics
 biopython>=1.83

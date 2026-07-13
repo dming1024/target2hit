@@ -30,14 +30,20 @@ def prepare_ligand(smiles: str, compound_id: str, work_dir: Path | None = None) 
         from meeko import MoleculePreparation, PDBQTWriterLegacy
         preparator = MoleculePreparation()
         mol_setup = preparator.prepare(mol)
-        pdbqt_string, _ = PDBQTWriterLegacy.write_string(mol_setup)
+        # meeko<0.7 returns list of setups (one per protonation state)
+        if isinstance(mol_setup, list):
+            mol_setup = mol_setup[0]
+        result = PDBQTWriterLegacy.write_string(mol_setup)
+        pdbqt_string = result[0]  # meeko 0.5 returns 3-tuple, 0.7 returns 2-tuple
         pdbqt_path = work_dir / f"{compound_id}.pdbqt"
         pdbqt_path.write_text(pdbqt_string)
         return pdbqt_path
-    except ImportError:
-        logger.warning("Meeko not available, using OpenBabel for PDBQT conversion")
+    except Exception:
+        logger.warning("Meeko failed, using OpenBabel for PDBQT conversion")
         mol2_path = work_dir / f"{compound_id}.mol2"
-        Chem.MolToMol2File(mol, str(mol2_path))
+        mol2_text = Chem.MolToMol2Block(mol) if hasattr(Chem, "MolToMol2Block") else ""
+        if mol2_text:
+            mol2_path.write_text(mol2_text)
         pdbqt_path = work_dir / f"{compound_id}.pdbqt"
         import subprocess
         subprocess.run(
